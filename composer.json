@@ -1,0 +1,14 @@
+{
+  "require": {
+    "illuminate/database": "*"
+  },
+  "autoload": {
+    "classmap": [
+      "classes"
+    ],
+    "files": [
+      "config.php",
+      "db.php"
+    ]
+  }
+}
