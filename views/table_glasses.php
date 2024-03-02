@@ -210,28 +210,29 @@ if (!empty($searchResutlt)) {
                 </table>
             </div>
             <!-- pagination -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
-                        <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?= $currentPage == $i ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $i ?>">
-                                <?= $i ?>
+            <?php if (!$searchFlag) { ?>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
+                            <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                    <?php endfor; ?>
-                    <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : '' ?>">
-                        <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= $currentPage == $i ? 'active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $i ?>">
+                                    <?= $i ?>
+                                </a>
+                            </li>
+                        <?php endfor; ?>
+                        <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : '' ?>">
+                            <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            <?php } ?>
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-outline-primary w-25" data-bs-toggle="modal" data-bs-target="#modalId">
                 Add
