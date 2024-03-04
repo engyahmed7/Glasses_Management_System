@@ -72,10 +72,30 @@ if (!empty($_POST)) {
 
 $deletedFlag = false;
 $deletedId = isset($_GET['_id']) ? $_GET['_id'] : '';
+
 if (!empty($deletedId)) {
-    $capsule->table('items')->where('id', $deletedId)->delete();
-    $deletedFlag = true;
+    $deletedItem = $capsule->table('items')->where('id', $deletedId)->first();
+
+    if (!$deletedItem) {
+        echo "Item not found";
+    } else {
+        $imageName = $deletedItem->Photo;
+        $target_dir = "../Resources/images/";
+        $target_file = $target_dir . basename($imageName);
+
+        if (!file_exists($target_file)) {
+            echo "Image file not found: $target_file";
+        } else {
+            unlink($target_file);
+        }
+        // Delete the item
+        $capsule->table('items')->where('id', $deletedId)->delete();
+        $deletedFlag = true;
+    }
 }
+
+
+
 
 /* -------------------------------------------------------------------------- */
 /*                                  search                                  */
@@ -198,7 +218,7 @@ if (!empty($searchResutlt)) {
                                         <a href="details.php?id=<?= $item->id ?>" class=" btn btn-success">
                                             View more
                                         </a>
-                                        <a href="table_glasses.php?_id=<?= $item->id ?>" class="btn btn-danger">
+                                        <a href="?_id=<?= $item->id ?>" class="btn btn-danger">
                                             Delete
                                         </a>
                                     </td>
@@ -214,7 +234,7 @@ if (!empty($searchResutlt)) {
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
                         <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                            <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label=" Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -226,7 +246,7 @@ if (!empty($searchResutlt)) {
                             </li>
                         <?php endfor; ?>
                         <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
+                            <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label=" Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
