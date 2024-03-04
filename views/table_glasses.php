@@ -18,7 +18,8 @@ $startIndex = ($currentPage - 1) * $itemsPerPage;
 
 $itemsOnPage = $items->slice($startIndex, $itemsPerPage)->values();
 
-
+$errorMsg='';
+$successMessage ='';
 /* -------------------------------------------------------------------------- */
 /*                             add / insert products                          */
 /* -------------------------------------------------------------------------- */
@@ -54,15 +55,16 @@ if (!empty($_POST)) {
                 $target_dir = "../Resources/images/";
                 $target_file = $target_dir . basename($_FILES["img"]["name"]);
                 move_uploaded_file($_FILES["img"]["tmp_name"], $target_file);
+                $successMessage ="Your data is added successfully";
                 $flag = true;
             } catch (\Exception $e) {
                 echo "Error: " . $e->getMessage();
             }
         } else {
-            echo "All fields are required.";
+            $errorMsg= "All fields are required.";
         }
     } else {
-        echo "Please select an image file.";
+        $errorMsg = "Please select an image file.";
     }
 }
 
@@ -77,19 +79,20 @@ if (!empty($deletedId)) {
     $deletedItem = $capsule->table('items')->where('id', $deletedId)->first();
 
     if (!$deletedItem) {
-        echo "Item not found";
+        $errorMsg= "Item not found";
     } else {
         $imageName = $deletedItem->Photo;
         $target_dir = "../Resources/images/";
         $target_file = $target_dir . basename($imageName);
 
         if (!file_exists($target_file)) {
-            echo "Image file not found: $target_file";
+            $errorMsg= "Image file not found";
         } else {
             unlink($target_file);
         }
-        // Delete the item
+
         $capsule->table('items')->where('id', $deletedId)->delete();
+        $successMessage = "Your data is deleted successfully.";
         $deletedFlag = true;
     }
 }
@@ -98,7 +101,7 @@ if (!empty($deletedId)) {
 
 
 /* -------------------------------------------------------------------------- */
-/*                                  search                                  */
+/*                                  search                                    */
 /* -------------------------------------------------------------------------- */
 
 $searchResutlt = isset($_GET['search']) ? $_GET['search'] : '';
@@ -128,19 +131,19 @@ if (!empty($searchResutlt)) {
 </head>
 
 <body>
-    <!-- add new product alert -->
-    <?php if (!empty($_POST['submit']) && $flag) { ?>
+    <!-- add / delete product alert -->
+    <?php if (!empty($_POST['submit']) && $flag || $deletedFlag) { ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <strong>Done!</strong> Your data is added successfuly.
+            <strong>Done!</strong> <?= $successMessage ?>
         </div>
     <?php } ?>
 
-    <!-- delete product alert -->
-    <?php if ($deletedFlag) { ?>
+     <!-- Error alert -->
+     <?php if ($errorMsg) { ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <strong>Done!</strong> Your data is deleted successfuly.
+            <?= $errorMsg ?>
         </div>
     <?php } ?>
 
