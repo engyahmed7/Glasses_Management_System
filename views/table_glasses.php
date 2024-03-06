@@ -32,9 +32,6 @@ $productImage = isset($_POST['img']) ? $_POST['img'] : '';
 $flag = false;
 
 if (!empty($_POST)) {
-    $productName = isset($_POST['name']) ? $_POST['name'] : '';
-    $productPrice = isset($_POST['price']) ? $_POST['price'] : '';
-    $productCategory = isset($_POST['category']) ? $_POST['category'] : '';
     $originalFilename = $_FILES['img']['name'];
     if (!empty($_FILES['img']['tmp_name'])) {
 
