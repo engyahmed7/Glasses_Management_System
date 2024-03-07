@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "../db.php";
 
 /* -------------------------------------------------------------------------- */
@@ -94,8 +95,6 @@ if (!empty($deletedId)) {
 }
 
 
-
-
 /* -------------------------------------------------------------------------- */
 /*                                  search                                    */
 /* -------------------------------------------------------------------------- */
@@ -113,6 +112,9 @@ if (!empty($searchResutlt)) {
     $searchFlag = true;
 }
 
+// handle update alert 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -127,6 +129,16 @@ if (!empty($searchResutlt)) {
 </head>
 
 <body>
+    <?php
+    if (isset($_SESSION['alert_message'])) {
+        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>Done!</strong> ' . $_SESSION['alert_message'] . '
+                </div>';
+
+        unset($_SESSION['alert_message']);
+    }
+    ?>
     <!-- add / delete product alert -->
     <?php if (!empty($_POST['submit']) && $flag || $deletedFlag) { ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -183,6 +195,9 @@ if (!empty($searchResutlt)) {
                                             <a href="table_glasses.php?_id=<?= $item->id ?>" class="btn btn-danger">
                                                 Delete
                                             </a>
+                                            <a href="update.php?itemId=<?= $item->id ?>" class="btn btn-warning">
+                                                Update
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php }
@@ -221,6 +236,10 @@ if (!empty($searchResutlt)) {
                                         <a href="?_id=<?= $item->id ?>" class="btn btn-danger">
                                             Delete
                                         </a>
+                                        <a href="update.php?itemId=<?= $item->id ?>" class="btn btn-warning">
+                                            Update
+                                        </a>
+
                                     </td>
                                 </tr>
                             <?php }
@@ -272,29 +291,32 @@ if (!empty($searchResutlt)) {
                         <form action="" method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="mb-3 container-fluid">
+
                                     <label for="name" class="form-label">Product Name</label>
                                     <input type="text" name="name" id="name" class="form-control" placeholder=""
                                         aria-describedby="helpId" />
-                                    <label for="img" class="form-label mt-2">Product Photo</label>
+
+                                    <label for=" img" class="form-label mt-2">Product Photo</label>
                                     <input type="file" class="form-control" name="img" id="img" placeholder=""
                                         aria-describedby="fileHelpId" />
+
                                     <label for="price" class="form-label mt-2">Product Price</label>
                                     <input type="text" name="price" id="price" class="form-control" placeholder=""
                                         aria-describedby="helpId" />
+
                                     <label for="category" class="form-label mt-2">Product Category</label>
                                     <textarea class="form-control" name="category" id="category" rows="3"></textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <input type="submit" name="submit" value="Save" class="btn btn-primary" />
+                                <input type="submit" name="submit" value="Add" class="btn btn-primary" />
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
-
-
 
         </div>
     </div>
