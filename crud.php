@@ -1,6 +1,8 @@
 <?php
 require_once "./db.php";
 
+header('Content-Type: application/json');
+
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         echo handleGetRequest();
@@ -40,34 +42,60 @@ function handleGetRequest()
 {
     $urlParts = explode('/', $_SERVER['REQUEST_URI']);
 
-    $resourceId = (isset($urlParts[2]) && is_numeric($urlParts[2])) ? (int) $urlParts[2] : 0;
+    $resource = $urlParts[2];
+
+    $resourceId = (isset($urlParts[3]) && is_numeric($urlParts[3])) ? (int) $urlParts[3] : 0;
 
     global $capsule;
 
-    if ($resourceId == 0) {
-        return json_encode(getAllGlasses($capsule));
+    if ($resource === 'glasses') {
+        if ($resourceId == 0) {
+            return json_encode(getAllGlasses($capsule));
+        } else {
+            return json_encode(["message" => "Invalid API"]);
+        }
+    } elseif ($resource === 'glass') {
+        if ($resourceId != 0) {
+            return json_encode(getSingleGlass($capsule, $resourceId));
+        } else {
+            http_response_code(400);
+            return json_encode(["error" => "No resource ID provided"]);
+        }
     } else {
-        return json_encode(getSingleGlass($capsule, $resourceId));
+        http_response_code(404);
+        return json_encode(["error" => "Resource not found"]);
     }
 }
 
+
 function addNewGlaases($capsule)
 {
-    if (empty($_POST)) {
-        http_response_code(400);
-        return json_encode(["error" => "No data sent"]);
+    $urlParts = explode('/', $_SERVER['REQUEST_URI']);
+
+    if (isset($urlParts[2])) {
+        $resource = $urlParts[2];
+
+
+        if ($resource === 'glasses') {
+            if (empty($_POST)) {
+                http_response_code(400);
+                return json_encode(["error" => "No data sent"]);
+            }
+
+            $file = $_FILES['Photo'];
+            $uploadDirectory = "./Resources/images/";
+            $targetFile = $uploadDirectory . basename($file['name']);
+
+            $data = $_POST;
+            $data['Photo'] = $targetFile;
+
+            $capsule->table("items")->insert($data);
+
+            return json_encode($data);
+        }
     }
-
-    $file = $_FILES['Photo'];
-    $uploadDirectory = "./Resources/images/";
-    $targetFile = $uploadDirectory . basename($file['name']);
-
-    $data = $_POST;
-    $data['Photo'] = $targetFile;
-
-    $capsule->table("items")->insert($data);
-
-    return json_encode($data);
+    http_response_code(404);
+    return json_encode(["error" => "Resource not found"]);
 }
 
 
@@ -75,7 +103,11 @@ function deleteGlass($capsule)
 {
     $urlParts = explode('/', $_SERVER['REQUEST_URI']);
 
-    $resourceId = (isset($urlParts[2]) && is_numeric($urlParts[2])) ? (int) $urlParts[2] : 0;
+    $resource = $urlParts[2];
+
+    $resourceId = (isset($urlParts[3]) && is_numeric($urlParts[3])) ? (int) $urlParts[3] : 0;
+
+    if($resource === 'glasses'){
 
     if ($resourceId == 0) {
         http_response_code(400);
@@ -91,13 +123,20 @@ function deleteGlass($capsule)
     if ($deleted) {
         return json_encode(["message" => "Item deleted successfully"]);
     }
-
+}
+http_response_code(404);
+return json_encode(["error" => "Resource not found"]);
 }
 
 function updateGlass($capsule)
 {
     $urlParts = explode('/', $_SERVER['REQUEST_URI']);
-    $resourceId = (isset($urlParts[2]) && is_numeric($urlParts[2])) ? (int) $urlParts[2] : 0;
+
+    $resource = $urlParts[2];
+
+    $resourceId = (isset($urlParts[3]) && is_numeric($urlParts[3])) ? (int) $urlParts[3] : 0;
+
+    if($resource === 'glasses'){
 
     if ($resourceId == 0) {
         http_response_code(400);
@@ -127,4 +166,7 @@ function updateGlass($capsule)
     $capsule->table("items")->where("id", $resourceId)->update($data);
 
     return json_encode($data);
+}
+http_response_code(404);
+return json_encode(["error" => "Resource not found"]);
 }
