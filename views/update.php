@@ -51,7 +51,7 @@ if (!empty($_POST)) {
 
 <body>
     <div class="container">
-        <h1 class="display-4 text-center mt-5 mb-5">Update User</h1>
+        <h1 class="display-4 text-center mt-5 mb-5">Update Product</h1>
         <form method="POST" enctype="multipart/form-data">
             <div class="mb-3 container-fluid">
 

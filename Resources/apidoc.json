@@ -1,0 +1,8 @@
+{
+  "name": "glasses API",
+  "version": "1.0.0",
+  "description": "Glasses API description",
+  "title": "Glasses API",
+  "url": "http://localhost:3000/crud.php",
+  "sampleUrl": true
+}
