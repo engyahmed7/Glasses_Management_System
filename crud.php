@@ -58,7 +58,12 @@ function addNewGlaases($capsule)
         return json_encode(["error" => "No data sent"]);
     }
 
+    $file = $_FILES['Photo'];
+    $uploadDirectory = "./Resources/images/";
+    $targetFile = $uploadDirectory . basename($file['name']);
+
     $data = $_POST;
+    $data['Photo'] = $targetFile;
 
     $capsule->table("items")->insert($data);
 
@@ -75,9 +80,16 @@ function deleteGlass($capsule)
     if ($resourceId == 0) {
         http_response_code(400);
         return json_encode(["error" => "No resource id provided"]);
-    } else {
-        $capsule->table("items")->where("id", $resourceId)->delete();
-        return json_encode(["message" => "Glass deleted"]);
+    }
+    $existingItem = $capsule->table("items")->find($resourceId);
+    if (!$existingItem) {
+        http_response_code(404);
+        return json_encode(["error" => "Item not found with ID: $resourceId"]);
+    }
+
+    $deleted= $capsule->table("items")->where("id", $resourceId)->delete();
+    if($deleted){
+        return json_encode(["message" => "Item deleted successfully"]);
     }
 
 }
