@@ -87,8 +87,8 @@ function deleteGlass($capsule)
         return json_encode(["error" => "Item not found with ID: $resourceId"]);
     }
 
-    $deleted= $capsule->table("items")->where("id", $resourceId)->delete();
-    if($deleted){
+    $deleted = $capsule->table("items")->where("id", $resourceId)->delete();
+    if ($deleted) {
         return json_encode(["message" => "Item deleted successfully"]);
     }
 
