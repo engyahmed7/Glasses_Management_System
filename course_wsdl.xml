@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://localhost:3000/soap_service.php" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="App.Course" targetNamespace="http://localhost:3000/soap_service.php">
+  <types>
+    <xsd:schema targetNamespace="http://localhost:3000/soap_service.php">
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+    </xsd:schema>
+  </types>
+  <portType name="App.CoursePort">
+    <operation name="getCourses">
+      <documentation>Get Course List</documentation>
+      <input message="tns:getCoursesIn"/>
+      <output message="tns:getCoursesOut"/>
+    </operation>
+    <operation name="getCourseById">
+      <documentation>Get Single Course</documentation>
+      <input message="tns:getCourseByIdIn"/>
+      <output message="tns:getCourseByIdOut"/>
+    </operation>
+    <operation name="getLessons">
+      <documentation>Get Course Lessons</documentation>
+      <input message="tns:getLessonsIn"/>
+      <output message="tns:getLessonsOut"/>
+    </operation>
+  </portType>
+  <binding name="App.CourseBinding" type="tns:App.CoursePort">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getCourses">
+      <soap:operation soapAction="http://localhost:3000/soap_service.php#getCourses"/>
+      <input>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:3000/soap_service.php"/>
+      </input>
+      <output>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:3000/soap_service.php"/>
+      </output>
+    </operation>
+    <operation name="getCourseById">
+      <soap:operation soapAction="http://localhost:3000/soap_service.php#getCourseById"/>
+      <input>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:3000/soap_service.php"/>
+      </input>
+      <output>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:3000/soap_service.php"/>
+      </output>
+    </operation>
+    <operation name="getLessons">
+      <soap:operation soapAction="http://localhost:3000/soap_service.php#getLessons"/>
+      <input>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:3000/soap_service.php"/>
+      </input>
+      <output>
+        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:3000/soap_service.php"/>
+      </output>
+    </operation>
+  </binding>
+  <message name="getCoursesIn"/>
+  <message name="getCoursesOut">
+    <part name="return" type="soap-enc:Array"/>
+  </message>
+  <message name="getCourseByIdIn">
+    <part name="id" type="xsd:int"/>
+  </message>
+  <message name="getCourseByIdOut">
+    <part name="return" type="soap-enc:Array"/>
+  </message>
+  <message name="getLessonsIn">
+    <part name="courseId" type="xsd:int"/>
+  </message>
+  <message name="getLessonsOut">
+    <part name="return" type="soap-enc:Array"/>
+  </message>
+  <service name="App.CourseService">
+    <port name="App.CoursePort" binding="tns:App.CourseBinding">
+      <soap:address location="http://localhost:3000/soap_service.php"/>
+    </port>
+  </service>
+</definitions>
